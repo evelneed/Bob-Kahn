@@ -1,0 +1,6 @@
+The pulse test provided helpful results in analysing the bits per second(bps) speed of the rasberry pi to the NIC.
+Our testing consisted of timing each of the 4 receiver ports with a single bit and then averaging that time to get a single nodes bps. We then repeated that 100 times and averaged it again.
+
+We measured an average of 70 bits per millisecond, meaning approximatly 14.2 bps. 
+
+This result was supprising because it appears to be slower than anticipated. Further on in the project we will need more specifics for the timing of these processes so more research will need to be done
