@@ -1,0 +1,33 @@
+%% Preamble stuff needed so that LaTeX can do the right thing
+\documentclass{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\begin{document}
+%% Section enumerating upcoming tasks and task owners for roughly the next 24 hours
+\section*{Next Goals and Deliverables}
+\begin{itemize}
+\item Continue NRZ research - Evelyn/Oliver
+\item Continue error detection research - Evelyn/Oliver
+\item Create and run an experiment on error detection + correction
+\item Fix/continue research our timing to get an accurate bps bound
+\item Work with user input for bit sequences to send and receive for demo
+\end{itemize}
+%% Section enumerating progress from the previous day. Items people were responsible for in the last progress report must appear. Additional tasks that the group agreed to add since the last progress report may be presented here.
+\section*{Previous Goals and Deliverables}
+\begin{itemize}
+\item Pulse experiment (DONE) - Evelyn and Oliver, commit by Oliver (Experiments/pulsetest.c)
+\item Pulse experiment timing + write up (DONE) - All, write up by Oliver (Experiments/pulsewriteup.txt)
+\item Continued research NRZ encoding (partial...) - bibtex additions by all (bib.tex)
+\item Error detection experiment(not started) - agreed to defer until we have some experience with the HW which we can now move forward on
+\item 4 bit sending and receiving using cable (DONE) - Evelyn and Oliver, commit by Oliver (Experiments/NRZexp.c)
+\end{itemize}
+%% Sections above should be short bullets. Longer free form discussion of information from above goes here. These should still be short! More that a couple sentences and the discussion is better suited as a results write-up, appendix, or design document.
+\section*{Discussion}
+\begin{itemize}
+\item Getting set up with the pi was a bit rough as it was unfamiliar to both of us but once we get it up and running and wrapped our heads around it, things went much faster
+\item Our timing within the pulse experiment seemed much slower than we expected, so we are going to keep an eye on that in future experiments
+\item Error detection experiment 1 - Produce and commit C code to implement what we have learned from error detection. Our sending and receiving of 4 bit patterns is a good foundation for this. We still need to finalize the what our deliverable goal for this experiment will be. 
+\item We were unsuccesful in recruiting a third member but that's ok! 
+\end{itemize}
+%% The appendix pages go here if there are any...
+%\section*{Appendix}
+\end{document}
