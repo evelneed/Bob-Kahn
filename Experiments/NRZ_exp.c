@@ -24,8 +24,8 @@ void main() {
 		int N = userInput[i] - '0';
 		//write it to the port 1 transmitter
 		gpio_write(0, 27, N);
-		sleep(0.5);
-		//receieve and record the input in the port for receiver
+		sleep(0.0000001);
+		//receieve and record the input in the port 4 receiver
 		recv[i] = gpio_read(0, 20);
 	}
 	//read through and print the inputed bits

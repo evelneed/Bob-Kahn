@@ -27,6 +27,7 @@ int toggle() {
 			gpio_write(0, i, 0);
 	       		end = clock();
 			time += end - start;
+			//TODO divide by clock tics
 			//printf("%d \n", time);
 		}
 		else{
