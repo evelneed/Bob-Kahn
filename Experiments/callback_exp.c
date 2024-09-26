@@ -2,6 +2,7 @@
 #include <pigpiod_if2.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <math.h>
 
 //global variables for tick comparison
 uint32_t previous_tick = 0;
@@ -35,20 +36,23 @@ void call_back(int pi, unsigned gpio, unsigned level, uint32_t tick){
 	//printf("current time: %x, tick: %x, prev_tick %x", current_time, tick, previous_tick);
 
 	//check current time vs base time
-	uint32_t percent_error = ((base_time/current_time)*100);
-	printf("checked percent error: base_time: %x current_time: %x percent error %x \n", base_time, current_time, percent_error);
+	double percent_error = fabs(((double)base_time - current_time) / base_time) * 100.0;
+	//printf("checked percent error: base_time: %x current_time: %x percent error %.2f%% \n", base_time, current_time, percent_error);
 	
 	//check its not the first or second state change
 	//then see if it is within 25% error of original time if so record it, if not than it is in between change between re[eat numbers
 	if ((previous_tick != 0) && (base_time != 0)){
-		if ((percent_error > 125) || (percent_error < 75)){
-			//printf(" incorrect transition percent error: %x \n", percent_error);
+		if (percent_error > 25){ 
+			printf(" incorrect transition percent error: %.2f%%  tick: %x previous_tick: %x base_time: %x curremt_time: %x \n", percent_error,tick,previous_tick,base_time,current_time);
 		}
- 		if ((percent_error < 125) && (percent_error > 75)){
-			//printf("correct transition  level: %x percent_error: %x  \n",level,percent_error);
-			previous_tick = tick;
+		else{
+			printf("correct transition  level: %u percent_error: %.2f%%  \n",level,percent_error);
+			//previous_tick = tick;
+			//set the base time to the previous time to avoid time drift
+			//base_time = current_time;
 		}		
 	}
+	previous_tick = tick;
 	w++;
 		
 }
