@@ -1,0 +1,32 @@
+%% Preamble stuff needed so that LaTeX can do the right thing
+\documentclass{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\begin{document}
+%% Section enumerating upcoming tasks and task owners for roughly the next 24 hours
+\section*{Next Goals and Deliverables}
+\begin{itemize}
+\item Merge send + receive with Manchester encoding - Evelyn/Oliver
+\item Add in header + error detection bits to message - Evelyn
+\item Check received data for error - Oliver
+\item Work to have both machines sending and receiving - Evelyn/Oliver
+\item Add in existing ASCII to bit conversion to send characters - Evelyn/Oliver
+\end{itemize}
+%% Section enumerating progress from the previous day. Items people were responsible for in the last progress report must appear. Additional tasks that the group agreed to add since the last progress report may be presented here.
+\section*{Previous Goals and Deliverables}
+\begin{itemize}
+\item Manchester encoding for transmission (DONE) - Evelyn
+\item Manchester encoding on receiving end (partial) - Oliver
+\item Worked in wave + callback pigpio existing libraries within our send + receive (DONE) - Evelyn/Oliver
+\item ASCII values to bits (DONE) - Oliver
+\end{itemize}
+%% Sections above should be short bullets. Longer free form discussion of information from above goes here. These should still be short! More that a couple sentences and the discussion is better suited as a results write-up, appendix, or design document.
+\section*{Discussion}
+\begin{itemize}
+\item We have finally both wrapped our heads around what Manchester encoding actually means/does and have integrated that into our sending and receiving bit process (we can now send more than just alternating bit patterns!)
+\item We have yet to add in any error detection, just been researching it, so that will have to happen over the weekend
+\item The other major hurdle before class on Monday is getting both machines to be able to send and receive, right now one can send and the other receives. Hopefully that won't be too too involved...
+\item Oliver already wrote code to convert all characters to bits so going from sending a bit to any other kind of data shouldn't be too tough!
+\end{itemize}
+%% The appendix pages go here if there are any...
+%\section*{Appendix}
+\end{document}
