@@ -13,6 +13,8 @@ uint32_t falling_base_time = 0;
 int first_falling_edge = 1;
 int first_rising_edge = 1;
 int w = 0;
+int i = 0;
+int results [14];
 
 
 //TODO program must start high
@@ -25,7 +27,7 @@ void call_back(int pi, unsigned gpio, unsigned level, uint32_t tick){
 	if(rising_base_time == 0 && first_rising_edge == 0 && level == 0) {
 		rising_base_time = tick - first_tick;
 		previous_tick = first_tick;
-		printf( "setting rising base: %li loop #: %d \n",rising_base_time,w);
+		//printf( "setting rising base: %li loop #: %d \n",rising_base_time,w);
 		//printf("base_time: %li  tick: %li  first_tick: %li \n", base_time,tick,first_tick);
 	}
 
@@ -33,11 +35,11 @@ void call_back(int pi, unsigned gpio, unsigned level, uint32_t tick){
 	if(first_falling_edge && level == 1 && first_rising_edge == 0){
 		falling_base_time = tick-previous_tick;
 		first_falling_edge = 0; 
-		printf("setting falling base time: %li loop#: %d \n", falling_base_time, w);
+		//printf("setting falling base time: %li loop#: %d \n", falling_base_time, w);
 	}
 
 	//edge case for start
-	if (first_rising_edge){
+	if (first_rising_edge && level == 1){
 		first_tick = tick;
 		first_rising_edge = 0;
 	}
@@ -65,12 +67,14 @@ void call_back(int pi, unsigned gpio, unsigned level, uint32_t tick){
 	//then see if it is within 25% error of original time if so record it, if not than it is in between change between re[eat numbers
 	if ((previous_tick != 0) && (base_time != 0)){
 		if (percent_error > 25){ 
-			printf(" incorrect transition percent error: %.2f%%  tick: %li curremt_time: %li \n", percent_error,tick ,current_time);
-			printf(" rising base time: %li falling base time: %li base time: %li ", rising_base_time, falling_base_time, base_time);
+			printf(" incorrect transition percent error: %.2f%%  base_time: %li current_time: %li level: %u \n", percent_error,base_time,current_time,level);
 		}
 		else{
 			printf("correct transition  level: %u percent_error: %.2f%% rising_base_time: %li falling-base_time: %li  \n",level,percent_error,rising_base_time,falling_base_time);
 			previous_tick = tick;
+			//store values in an array
+			results[i] = level;
+			i++;
 			//set the base time to the previous time to avoid time drift
 			//base_time = current_time;
 		}		
@@ -84,16 +88,17 @@ void main() {
 	int rising_callback = callback(0, 20, EITHER_EDGE, call_back);
 	//the program must start high
 	//tester message the header is 011001 
-	int tester_mess[] = {0,1,1,0,0,1,1,0,1,0};
+	int tester_mess[] = {0,1,1,0,0,1,0,1,1,0};
 	//size of tester mess
 	int size = sizeof(tester_mess)/sizeof(tester_mess[0]);
-	//TODO dont rely on setting the state below
-	gpio_write(0,27,0);
 	//loop through and write to gpio
-	for (int i = 0; i < size; i++) {
+	/*for (int i = 0; i < size; i++) {
 		gpio_write(0,27,tester_mess[i]);
-		sleep(.0001);
+		sleep(.000001);
 	}
-	
-	time_sleep(3);
+	*/
+	time_sleep(5);
+	for (int z = 0; z <14; z++) {
+		printf("%d ,",results[z]);
+	}
 }
