@@ -1,0 +1,33 @@
+%% Preamble stuff needed so that LaTeX can do the right thing
+\documentclass{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\begin{document}
+%% Section enumerating upcoming tasks and task owners for roughly the next 24 hours
+\section*{Next Goals and Deliverables}
+\begin{itemize}
+\item Continue NRZ research - Evelyn/Oliver
+\item Continue error detection research - Evelyn
+\item Create and run an experiment on error detection + correction
+\item chars to bits experiment (Oliver)
+\item Work with user input for bit sequences to send and receive for demo combined.c (Oliver and Evelyn)
+\end{itemize}
+%% Section enumerating progress from the previous day. Items people were responsible for in the last progress report must appear. Additional tasks that the group agreed to add since the last progress report may be presented here.
+\section*{Previous Goals and Deliverables}
+\begin{itemize}
+\item Pulse experiment (DONE) - Evelyn and Oliver, commit by Oliver (Experiments/pulsetest.c)
+\item Pulse experiment timing + write up (DONE) - All, write up by Oliver (Experiments/pulsewriteup.txt)
+\item Continued research NRZ encoding (partial...) - bibtex additions by all (bib.tex)
+\item 4 bit sending and receiving using cable (DONE) - Evelyn and Oliver, commit by Oliver (Experiments/NRZexp.c)
+\item pulse Experiment (DONE) - (Evelyn)
+\item CallBack Experiment (DONE) - (Oliver)
+\end{itemize}
+%% Sections above should be short bullets. Longer free form discussion of information from above goes here. These should still be short! More that a couple sentences and the discussion is better suited as a results write-up, appendix, or design document.
+\section*{Discussion}
+\begin{itemize}
+\item Combined the pulse and callback experiments in order to get a functional receiving and sending program but only one way at the moment, currently trying to figure out the looping of both reading and sending simultaneously
+\item Demo 1 (monday) will not have our demo fully functional by Monday but are optimistic about how close we are. The program is not reliable enough for the demo
+\item the team has error detection on the horizon as well as ASCII sending implementation following the completion of the demo. 
+\end{itemize}
+%% The appendix pages go here if there are any...
+%\section*{Appendix}
+\end{document}
