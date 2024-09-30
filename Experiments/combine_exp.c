@@ -8,7 +8,7 @@
 void sendPulses(int bits[], int length);
 int* charToBit(char bits[], int length);
 void call_back(int pi, unsigned gpio, unsigned level, uint32_t);
-void sendHeader(int* input);
+void sendHeader(int* input,int input_length);
 void startSend();
 void setVariables();
 void process_results();
@@ -129,7 +129,7 @@ void process_results() {
 		printf("%d,", results[j]);
 	}
     message_received = 1;
-    startSend();
+    printf("loop done");
 }
 
 
@@ -144,24 +144,23 @@ void main() {
 void startSend(){
 	setVariables();//reset send variables
     char buffer[100]; //limited at 99 bits for now
-	printf("Please enter a series of 0s and 1s to send \n");
+	printf("\n Please enter a series of 0s and 1s to send \n");
 	scanf("%s", buffer);
 	size_t input_length = strlen(buffer);
 	char *input_char = (char *)malloc((input_length +1) *sizeof(char)); //allocate the memory
 	int *input = (int*)malloc((input_length+1) *sizeof(char)); //make it for ints now
 	strcpy(input_char, buffer);
     printf("Input: %s \n", input_char);
-    //	int *input = charToBit(input_char, input_length);*/
+    //	int *input = charToBit(input_char, input_length);
 	for (int i = 0; i < input_length; i++){
 	//	int ascii = (int) input_char[i];
 		input[i] = input_char[i]- '0';
 		//printf("%d ", input[i]);
 	}
-    sendHeader(input);
-    sendPulses(input, input_length);
+    sendHeader(input, input_length);
 }
 
-void sendHeader(int* input){
+void sendHeader(int* input, int length){
     gpio_write(0, 27, 0);
     int set_times[4] = {1, 0, 1, 0}; //the header
     for (int i = 0; i < 4; i++){ //send the header
@@ -178,6 +177,7 @@ void sendHeader(int* input){
 			usleep(0.1 * 1000000);
 		}
 	}
+    sendPulses(input, length);
 }
 
 void setVariables(){
@@ -191,7 +191,7 @@ first_rising_edge = 1;
 not_first = 1;
 w = 0;
 i = 0;
-//dynamically allocating memory for the messaging data
+//TODO dynamically allocating memory for the messaging data
 results[1000];
 results_size = 0;
 message_received = 0;
@@ -252,7 +252,7 @@ void sendPulses(int bits[], int length){
 		}
 	}
 	usleep(0.5 * 1000000);
-	if (bits[length - 1] = 0) { //tail
+	if (bits[length - 1] == 0) { //tail
 		gpio_write(0, 27, 0);
 	}
 	else {
@@ -263,5 +263,6 @@ void sendPulses(int bits[], int length){
 	while (!message_received){
 		usleep(1000);
 	}
+	startSend();
 	
 }
