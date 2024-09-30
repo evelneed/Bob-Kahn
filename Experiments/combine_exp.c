@@ -8,9 +8,11 @@
 void sendPulses(int bits[], int length);
 int* charToBit(char bits[], int length);
 void call_back(int pi, unsigned gpio, unsigned level, uint32_t);
-void sendHeader();
+void sendHeader(int* input);
 void startSend();
-void setVariables()
+void setVariables();
+void process_results();
+
 
 //global variables for tick comparison
 uint32_t previous_tick = 0;
@@ -26,7 +28,7 @@ int i = 0;
 //dynamically allocating memory for the messaging data
 int results[1000];
 int results_size = 0;
-
+int message_received = 0;
 
 //callback for rising edges 
 void call_back(int pi, unsigned gpio, unsigned level, uint32_t tick){
@@ -79,14 +81,14 @@ void call_back(int pi, unsigned gpio, unsigned level, uint32_t tick){
 	//then see if it is within 25% error of original time if so record it, if not than it is in between change between re[eat numbers
 	if ((previous_tick != 0) && (base_time != 0) && (not_first == 0)){
 		//tail recognition 
-		if (percent_error > 300) {
+		if (percent_error > 300){
+			process_results();
 			printf("end of message");
 		}
 		else if (percent_error > 25){ 
-			printf(" incorrect transition percent error: %.2f%%  base_time: %li current_time: %li level: %u \n", percent_error,base_time,current_time,level);
+			//do nothing
 		}
 		else{
-			printf("correct transition  level: %u percent_error: %.2f%% rising_base_time: %li falling-base_time: %li  \n",level,percent_error,rising_base_time,falling_base_time);
 			previous_tick = tick;
 
 
@@ -126,7 +128,7 @@ void process_results() {
 	for (int j = 0; j < results_size; j++) {
 		printf("%d,", results[j]);
 	}
-    setVariables();
+    message_received = 1;
     startSend();
 }
 
@@ -135,16 +137,12 @@ void main() {
 	pigpio_start(0,0);
     set_mode(0, 27, PI_OUTPUT);
 	set_mode(0, 20, PI_INPUT);
-    //initialize rising and falling callback on port 4 recv
+    //initialize rising and falling callback on port 4 rev
     startSend();
-    time_sleep(10);
-	//size of tester mess
-	time_sleep(3);
-    process_results();
-	free(input);
 }
 
 void startSend(){
+	setVariables();//reset send variables
     char buffer[100]; //limited at 99 bits for now
 	printf("Please enter a series of 0s and 1s to send \n");
 	scanf("%s", buffer);
@@ -159,11 +157,11 @@ void startSend(){
 		input[i] = input_char[i]- '0';
 		//printf("%d ", input[i]);
 	}
-    sendHeader();
+    sendHeader(input);
     sendPulses(input, input_length);
 }
 
-void sendHeader(){
+void sendHeader(int* input){
     gpio_write(0, 27, 0);
     int set_times[4] = {1, 0, 1, 0}; //the header
     for (int i = 0; i < 4; i++){ //send the header
@@ -183,7 +181,6 @@ void sendHeader(){
 }
 
 void setVariables(){
-    //global variables for tick comparison
 previous_tick = 0;
 base_time = 0;
 rising_base_time = 0;
@@ -197,6 +194,7 @@ i = 0;
 //dynamically allocating memory for the messaging data
 results[1000];
 results_size = 0;
+message_received = 0;
 }
 
 int* charToBit(char bits[], int length){ //come back and make this return a 2d array later, helpful for error correction!
@@ -220,7 +218,6 @@ void sendPulses(int bits[], int length){
 //	gpio_write(0, gpio, 0); 
 	int state = 0; //starting in low
 	for (int bitNum = 0; bitNum < length; bitNum++){ //for every bit, add a pulse to the wave
-		printf("bit num: %d \n", bitNum);
 		if (bits[bitNum] == 0 && state == 0) { //normal, inc both 0 = rising edge
 			gpio_write(0, gpio, 1);
 			state = 1;
@@ -261,5 +258,10 @@ void sendPulses(int bits[], int length){
 	else {
 		gpio_write(0, 27, 1);
 	}
+	free(bits);
 	int call_back_one = callback(0, 20, EITHER_EDGE, call_back);
+	while (!message_received){
+		usleep(1000);
+	}
+	
 }
