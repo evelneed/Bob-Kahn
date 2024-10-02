@@ -1,0 +1,35 @@
+%% Preamble stuff needed so that LaTeX can do the right thing
+\documentclass{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\begin{document}
+%% Section enumerating upcoming tasks and task owners for roughly the next 24 hours
+\section*{Next Goals and Deliverables}
+\begin{itemize}
+\item Fix timing necessary for Manchester encoding with multiple threads
+\item Add error detection bits to message - Evelyn
+\item Rebuild multi way communication from working demos - Oliver
+\item restart wave approach with pulses -Evelyn
+\item Work to have both machines sending and receiving - Evelyn/Oliver
+\item Begin Network Layer implementing the linked layer demo -Evelyn/Oliver
+\item identify error with callbacks not registering unless power cycled through
+\end{itemize}
+%% Section enumerating progress from the previous day. Items people were responsible for in the last progress report must appear. Additional tasks that the group agreed to add since the last progress report may be presented here.
+\section*{Previous Goals and Deliverables}
+\begin{itemize}
+\item Manchester encoding for transmission (DONE) - Evelyn
+\item Manchester encoding on receiving end (DONE) - Oliver
+\item Worked in wave + callback pigpio existing libraries within our send + receive (DONE) - Eve- lyn/Oliver
+\item ASCII values to bits (DONE) - Oliver
+\end{itemize}
+%% Sections above should be short bullets. Longer free form discussion of information from above goes here. These should still be short! More that a couple sentences and the discussion is better suited as a results write-up, appendix, or design document.
+\section*{Discussion}
+\begin{itemize}
+\item Struggling heavily to identify the issues with our threaded program to send and receive between two systems. Currently the timing based on ticks gets thrown off by unexpected pauses being held randomly between transitions
+\item Working to understand why callback turns off unexpectedly unless power is cycled through.  
+\item Evelyn is working on revisiting the waves utilizing the pulses for the multi-way communication
+\item multiple groups seem to be on the same issue as us and hopefully we can work together over the next few days to figure it out together.
+\item we are starting to consider our network layer and moving on from the linked layer and returning to it later if progress is not made within the next few days.
+\end{itemize}
+%% The appendix pages go here if there are any...
+%\section*{Appendix}
+\end{document}
