@@ -12,6 +12,7 @@ void sendHeader(int* input,int input_length);
 void startSend();
 void setVariables();
 void process_results();
+void sending();
 
 
 //global variables for tick comparison
@@ -28,7 +29,8 @@ int i = 0;
 //dynamically allocating memory for the messaging data
 int results[1000];
 int results_size = 0;
-int message_received = 0;
+int message_received = 1;
+int messageSent = 0;
 
 //callback for rising edges 
 void call_back(int pi, unsigned gpio, unsigned level, uint32_t tick){
@@ -128,21 +130,31 @@ void process_results() {
 	for (int j = 0; j < results_size; j++) {
 		printf("%d,", results[j]);
 	}
-    message_received = 1;
-    printf("loop done");
+    printf("\n");
+	setVariables();
 }
 
 
 void main() {
 	pigpio_start(0,0);
     set_mode(0, 27, PI_OUTPUT);
-	set_mode(0, 20, PI_INPUT);
+	set_mode(0, 22, PI_INPUT);
     //initialize rising and falling callback on port 4 rev
-    startSend();
+	int call_back_one = callback(0, 22, EITHER_EDGE, call_back);
+    sending();
 }
 
+void sending() {
+	while (1) {
+		if(messageSent == 0){
+			message_received = 1;
+			startSend();
+		}
+		usleep(.5);
+	}
+}
 void startSend(){
-	setVariables();//reset send variables
+	messageSent = 1;
     char buffer[100]; //limited at 99 bits for now
 	printf("\n Please enter a series of 0s and 1s to send \n");
 	scanf("%s", buffer);
@@ -181,20 +193,20 @@ void sendHeader(int* input, int length){
 }
 
 void setVariables(){
-previous_tick = 0;
-base_time = 0;
-rising_base_time = 0;
-falling_base_time = 0;
-first_falling_edge = 1;
-first_rising_edge = 1;
-//not first edge change identifier  
-not_first = 1;
-w = 0;
-i = 0;
-//TODO dynamically allocating memory for the messaging data
-results[1000];
-results_size = 0;
-message_received = 0;
+	previous_tick = 0;
+	base_time = 0;
+	rising_base_time = 0;
+	falling_base_time = 0;
+	first_falling_edge = 1;
+	first_rising_edge = 1;
+	//not first edge change identifier  
+	not_first = 1;
+	w = 0;
+	i = 0;
+	//TODO dynamically allocating memory for the messaging data
+	results[1000];
+	results_size = 0;
+	message_received = 1;
 }
 
 int* charToBit(char bits[], int length){ //come back and make this return a 2d array later, helpful for error correction!
@@ -259,10 +271,8 @@ void sendPulses(int bits[], int length){
 		gpio_write(0, 27, 1);
 	}
 	free(bits);
-	int call_back_one = callback(0, 20, EITHER_EDGE, call_back);
 	while (!message_received){
 		usleep(1000);
 	}
-	startSend();
-	
+	messageSent = 1;
 }
