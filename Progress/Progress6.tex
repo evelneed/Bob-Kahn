@@ -1,0 +1,34 @@
+%% Preamble stuff needed so that LaTeX can do the right thing
+\documentclass{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\begin{document}
+%% Section enumerating upcoming tasks and task owners for roughly the next 24 hours
+\section*{Next Goals and Deliverables}
+\begin{itemize}
+\item Fix timing necessary for manchester encoding with multiple threads
+\item Add in error detection bits to message - Evelyn
+\item Check received data for error - Oliver
+\item Work to have both machines sending and receiving - Evelyn/Oliver
+\item Begin network layer and path finding research - Evelyn/Oliver
+\end{itemize}
+%% Section enumerating progress from the previous day. Items people were responsible for in the last progress report must appear. Additional tasks that the group agreed to add since the last progress report may be presented here.
+\section*{Previous Goals and Deliverables}
+\begin{itemize}
+\item Manchester encoding for transmission (DONE) - Evelyn
+\item Manchester encoding on receiving end (DONE) - Oliver
+\item Worked in wave + callback pigpio existing libraries within our send + receive (DONE) - Evelyn/Oliver
+\item Abandoned the wave approach with pulses as it was unreliable (DONE) - Evelyn
+\item ASCII values to bits (DONE) - Oliver
+\end{itemize}
+%% Sections above should be short bullets. Longer free form discussion of information from above goes here. These should still be short! More that a couple sentences and the discussion is better suited as a results write-up, appendix, or design document.
+\section*{Discussion}
+\begin{itemize}
+\item We have hit a  frustrating roadblock with merging the two. The timing logic that used to work no longer consistently works with multiple threads, but works sometimes. Struggling to debug this.
+\item We are not prioritizing adding in our code to conver chars to bits using ASCII values and vice versa, becaause while that would be cool, is not too related to funcionality. We will come back to this after finishing our network layer. 
+\item We should be moved onto the network layer but we cannot get past this last hurdle. Hopefully we make big progress tomorrow and can move on. 
+\item We are excited to familiarize oursleves with the network layer a bit more!
+\item Getting info from other groups on how they got theirs to be bi-directional is difficult as either the other groups also haven't or the code is far too different for me to make sense of it. The beauty and struggle of this class.
+\end{itemize}
+%% The appendix pages go here if there are any...
+%\section*{Appendix}
+\end{document}

@@ -1,0 +1,32 @@
+%% Preamble stuff needed so that LaTeX can do the right thing
+\documentclass{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\begin{document}
+%% Section enumerating upcoming tasks and task owners for roughly the next 24 hours
+\section*{Next Goals and Deliverables}
+\begin{itemize}
+\item ASCII encoding and decoding (pushed back)
+\item Research and start working on addressing
+\item Experiments to triple check error detection - Evelyn
+\item Continue network layer and path finding research - Evelyn/Oliver
+\end{itemize}
+%% Section enumerating progress from the previous day. Items people were responsible for in the last progress report must appear. Additional tasks that the group agreed to add since the last progress report may be presented here.
+\section*{Previous Goals and Deliverables}
+\begin{itemize}
+\item Succesfully got two machines talking back and forth! (DONE) - Both, commit by Oliver
+\item Redid wave layer and removed it again (DONE) - Evelyn
+\item ASCII values to bits (DONE) - Oliver
+\item Error encoding and detection with parity bit (DONE) - Evelyn
+\item Abandoned global variables (DONE) - Oliver
+\end{itemize}
+%% Sections above should be short bullets. Longer free form discussion of information from above goes here. These should still be short! More that a couple sentences and the discussion is better suited as a results write-up, appendix, or design document.
+\section*{Discussion}
+\begin{itemize}
+\item We have finally got two machine talking and sending code back and forth! This was a great step
+\item We are not still not priotizing text to bit conversion as we think our time is better spent moving past the link layer
+\item We have error checking parity bits after every 7 bits, but we want to do more experiments to ensure that this is enough to check errors and not too much falls through the cracks. We must see how noisy these machines are truly. 
+\item We are excited to familiarize oursleves with the network layer a bit more! It makes sense to both of us conceptually...just time to see if we can implement that conceptual understanding.
+\end{itemize}
+%% The appendix pages go here if there are any...
+%\section*{Appendix}
+\end{document}
