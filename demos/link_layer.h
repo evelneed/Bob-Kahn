@@ -1,5 +1,6 @@
 #ifndef LINK_LAYER_H
 #define LINK_LAYER_H
+#include <stdint.h>
 
 // Declare any global structures or variables here
 struct g_variables {
@@ -15,7 +16,9 @@ struct g_variables {
     int results[1000];
     int results_size;
     int message_done;
+    int delay;
 };
+extern struct g_variables globals;
 
 // Declare functions that will be used in network layer
 void sendPulses(int bits[], int length);

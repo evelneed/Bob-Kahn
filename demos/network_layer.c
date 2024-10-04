@@ -1,4 +1,8 @@
 #include <stdio.h>
+#include <pigpiod_if2.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <math.h>
 #include <string.h>
 #include "link_layer.h"  // Include the header for the link layer
 
@@ -9,6 +13,7 @@ extern int* charToBit(char bits[], int length);
 extern void process_results();
 extern void reset_variables();
 extern void send_header(int bits[]);
+
 
 
 void main() {

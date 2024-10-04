@@ -19,6 +19,7 @@ struct g_variables {
     int results[1000];   // Dynamically allocated for received data
     int results_size; // size of results storage message for message
     int message_done; // checks to see if the message is received 
+    const int delay;
 };
 
 // Initialize all the struct variables globally
@@ -34,12 +35,13 @@ struct g_variables globals = {
     .i = 0,
     .results_size = 0,
     .message_done = 1,
+    .delay = 0.01 * 1000000,
 };
 
 void sendPulses(int bits[], int length);
 void call_back(int pi, unsigned gpio, unsigned level, uint32_t tick);
 int* charToBit(char bits[], int length);
-void process_results();
+int* process_results();
 void reset_variables();
 void send_header(int bits[]);
 
@@ -56,17 +58,18 @@ void reset_variables(){
 
 //send header 
 void send_header(int input[]){
+	int set_times[4] = {1,0,1,0};
     for (int i = 0; i < 4; i++) { // send the header
         gpio_write(0, 27, set_times[i]);
         if (i == 3) {
             if (input[0] == 0) {
-                usleep(0.1 * 1000000);
+                usleep(globals.delay);
             }
             if (input[0] == 1) {
-                usleep(0.05 * 1000000);
+                usleep(globals.delay/2);
             }
             } else {
-                usleep(0.1 * 1000000);
+                usleep(globals.delay);
             }
     }
 }
@@ -88,35 +91,34 @@ int* charToBit(char bits[], int length) {
 
 void sendPulses(int bits[], int length) {
     int gpio = 27; // hardcoded to send from 27
-    double delay = 0.1;
     int state = 0; // starting in low
     for (int bitNum = 0; bitNum < length; bitNum++) {
         if (bits[bitNum] == 0 && state == 0) {
             gpio_write(0, gpio, 1);
             state = 1;
-            usleep((bits[bitNum + 1] == 0) ? (delay / 2) * 1000000 : delay * 1000000);
+            usleep((bits[bitNum + 1] == 0) ? (globals.delay/2) : globals.delay);
         } else if (bits[bitNum] == 0 && state == 1) {
             gpio_write(0, gpio, 0);
             state = 0;
             bitNum--;
-            usleep((delay / 2) * 1000000);
+            usleep((globals.delay / 2));
         } else if (bits[bitNum] == 1 && state == 1) {
             gpio_write(0, gpio, 0);
             state = 0;
-            usleep((bits[bitNum + 1] == 1) ? (delay / 2) * 1000000 : delay * 1000000);
+            usleep((bits[bitNum + 1] == 1) ? (globals.delay / 2) : globals.delay);
         } else if (bits[bitNum] == 1 && state == 0) {
             gpio_write(0, gpio, 1);
             state = 1;
             bitNum--;
-            usleep((delay / 2) * 1000000);
+            usleep((globals.delay / 2));
         }
     }
-    usleep(0.5 * 1000000);
+    usleep(globals.delay * 3.5);
     gpio_write(0, 27, (bits[length - 1] == 0) ? 0 : 1);
 }
 
 // Callback for receiving functionality
-void call_back(int pi, unsigned gpio, unsigned level, uint32_t tick) {
+void call_back(int pi, unsigned gpio, unsigned level, uint32_t tick) {	
     if (globals.rising_base_time == 0 && globals.first_rising_edge == 0 && level == 0) {
         globals.rising_base_time = tick - globals.previous_tick;
         globals.not_first = 0;
@@ -158,10 +160,10 @@ void call_back(int pi, unsigned gpio, unsigned level, uint32_t tick) {
 }
 
 // Process received results
-int[1000] process_results() {
+int* process_results() {
     if (globals.results_size < 2) {
         printf("Not enough bits to process\n");
-        return;
+        return 0;
     }
 
     for (int j = 2; j < globals.results_size; j++) {
