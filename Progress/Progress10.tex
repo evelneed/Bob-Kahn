@@ -1,0 +1,32 @@
+%% Preamble stuff needed so that LaTeX can do the right thing
+\documentclass{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\begin{document}
+%% Section enumerating upcoming tasks and task owners for roughly the next 24 hours
+\section*{Next Goals and Deliverables}
+\begin{itemize}
+\item Erorr detection / correction (pushed back) - Evelyn
+\item Test network layer further - both
+\item Upgrade network layer past a hard coded "map" - both
+\item Create sophisticated path-finding algorithm - both
+\item Upgrade addressing strategy to be more realistic and robust for more machines - both
+\end{itemize}
+%% Section enumerating progress from the previous day. Items people were responsible for in the last progress report must appear. Additional tasks that the group agreed to add since the last progress report may be presented here.
+\section*{Previous Goals and Deliverables}
+\begin{itemize}
+\item ASCII encoding and decoding (DONE) - Oliver
+\item Isolated the link layer into a header file ran by our new network layer (DONE) - Oliver 
+\item Implemented the network layer with a hard coded 'map' (done but needs much more testing) - Evelyn
+\item Eradicated all memory leaks and other instances of poor memory usage where we had been getting lucky - both 
+\end{itemize}
+%% Sections above should be short bullets. Longer free form discussion of information from above goes here. These should still be short! More that a couple sentences and the discussion is better suited as a results write-up, appendix, or design document.
+\section*{Discussion}
+\begin{itemize}
+\item We have decided to push back our error detection and correction for now as our link layer still works enough to build a network layer on top of it. We will go back to error stuff before class ends for our demo and I'm sure we will need it to send more complicated messages but right now the NIC is surprisingly quiet and we are getting very few apparent errors. 
+\item We have implemented char to bit conversion as it ultimately was quite helpful for the network layer to send the destination and home address for the message. 
+\item Our network layer has been merged with our old code and seems to be working with each machine having its own 'machine' struct where we can change the fields manually but we hope to move past this rudimentary level but we are going to test this much more before we upgrade the map creation logic. 
+\item Our message packing is succesful so far. We will see if our logic holds up with much more to send back and forth (files, etc).
+\end{itemize}
+%% The appendix pages go here if there are any...
+%\section*{Appendix}
+\end{document}
