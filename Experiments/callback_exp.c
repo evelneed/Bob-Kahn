@@ -124,25 +124,7 @@ void main() {
 	//initialize rising and falling callback on port 4 recv
 	int call_back_one = callback(0, 20, EITHER_EDGE, call_back);
 	//header
-/*	
-	gpio_write(0,27,1);
-	sleep(.5);
-	gpio_write(0,27,0);
-	sleep(.5);
-	gpio_write(0,27,1);
-	sleep(.5);
-	gpio_write(0,27,0);
-	sleep(.5);
-	//message
-	gpio_write(0,27,1);
-	sleep(.5);
-	gpio_write(0,27,0);
-	sleep(.5);
-	//tail could be a high held for 4 time signatures
-	gpio_write(0,27,1);
-	sleep(1);
-	gpio_write(0,27,0);
-*/	
+
 	time_sleep(10);
 	process_results();
 }

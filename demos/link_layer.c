@@ -22,6 +22,11 @@ struct g_variables {
     const int delay;
 };
 
+typedef struct{
+    int* input;
+    int length;
+} my_input;
+
 // Initialize all the struct variables globally
 struct g_variables globals = {
     .previous_tick = 0,
@@ -44,6 +49,10 @@ int* charToBit(char bits[], int length);
 int* process_results();
 void reset_variables();
 void send_header(int bits[]);
+my_input promptUser();
+void char_to_binary(char c, int* bits);
+char* binary_to_char(int* results, int length);
+
 
 void reset_variables(){
     globals.results_size = 0;
@@ -55,6 +64,64 @@ void reset_variables(){
     globals.first_rising_edge = 1;
     globals.not_first = 1;
 }
+
+my_input promptUser(){
+    my_input message;
+    // Limit input to 99 characters and ensure no buffer overflow
+    char buffer[100];  
+    printf("Please enter a message:\n");
+    fgets(buffer, sizeof(buffer), stdin);  // Use fgets to safely get input
+    size_t input_length = strlen(buffer);
+    // Remove newline character from fgets input
+    if (buffer[input_length - 1] == '\n') {
+        buffer[input_length - 1] = '\0';
+                input_length--;
+            }
+    // Allocate memory for input_char and input arrays
+    message.length = input_length * 8; //adjust the message length based on conversion of chars to bits
+    int *input = (int *)malloc((message.length) * sizeof(int));
+
+    for (int i = 0; i < input_length; i++) {
+        char_to_binary(buffer[i], &input[i * 8]);  // Convert character to binary
+    }
+    message.input = input;
+    /*
+    for (int i = 0; i < message.length; i++) {
+	printf("%d",message.input[i]);
+	fflush(stdout);
+    }
+    */
+    return message;
+}
+
+
+void char_to_binary(char c, int* bits) {
+    for (int i = 7; i >= 0; i--) {
+        bits[7 - i] = (c >> i) & 1; // Extract individual bits
+    }
+}
+
+char* binary_to_char(int* results, int length) {
+    // make sure the string is a multiple of 8
+    if (length % 8 != 0) {
+        printf("Error: Bit length is not a multiple of 8 \n");
+    }
+
+    // Allocate memory for the result string
+    int char_count = length / 8;
+    char* finished_result = (char*)malloc((char_count + 1) * sizeof(char)); 
+
+    for (int i = 0; i < char_count; i++) {
+        char value = 0;
+        for (int j = 0; j < 8; j++) {
+            // Build the char by shifting and adding the current bit
+            value = (value << 1) | results[i * 8 + j];
+        }
+        finished_result[i] = value;
+    }
+    return (finished_result);
+}
+
 
 //send header 
 void send_header(int input[]){
@@ -75,19 +142,6 @@ void send_header(int input[]){
 }
 
 
-int* charToBit(char bits[], int length) {
-    int* myBits = (int*)malloc(length * sizeof(int) * 8);
-    for (size_t i = 0; i < length; i++) {
-        int asciiVal = (int)bits[i];
-        for (int x = 8; x >= 0; x--) {
-            myBits[i * 8 + x] = asciiVal % 2;
-            int myNum = asciiVal % 2;
-            printf("%d", myNum);
-            asciiVal /= 2;
-        }
-    }
-    return myBits;
-}
 
 void sendPulses(int bits[], int length) {
     int gpio = 27; // hardcoded to send from 27
@@ -96,8 +150,11 @@ void sendPulses(int bits[], int length) {
         if (bits[bitNum] == 0 && state == 0) {
             gpio_write(0, gpio, 1);
             state = 1;
-            usleep((bits[bitNum + 1] == 0) ? (globals.delay/2) : globals.delay);
-        } else if (bits[bitNum] == 0 && state == 1) {
+	    if ((bitNum < length-1) && (bits[bitNum + 1] == 0)){
+		    usleep(globals.delay /2);
+	   } else {
+		   usleep(globals.delay);
+        } }else if (bits[bitNum] == 0 && state == 1) {
             gpio_write(0, gpio, 0);
             state = 0;
             bitNum--;
@@ -105,8 +162,12 @@ void sendPulses(int bits[], int length) {
         } else if (bits[bitNum] == 1 && state == 1) {
             gpio_write(0, gpio, 0);
             state = 0;
-            usleep((bits[bitNum + 1] == 1) ? (globals.delay / 2) : globals.delay);
-        } else if (bits[bitNum] == 1 && state == 0) {
+            if ((bitNum < length - 1)&& bits[bitNum + 1] == 1){
+		    usleep(globals.delay/2);
+		} else {
+		usleep(globals.delay);
+        } }
+	else if (bits[bitNum] == 1 && state == 0) {
             gpio_write(0, gpio, 1);
             state = 1;
             bitNum--;
@@ -118,7 +179,7 @@ void sendPulses(int bits[], int length) {
 }
 
 // Callback for receiving functionality
-void call_back(int pi, unsigned gpio, unsigned level, uint32_t tick) {	
+void call_back(int pi, unsigned gpio, unsigned level, uint32_t tick) {
     if (globals.rising_base_time == 0 && globals.first_rising_edge == 0 && level == 0) {
         globals.rising_base_time = tick - globals.previous_tick;
         globals.not_first = 0;
@@ -143,7 +204,6 @@ void call_back(int pi, unsigned gpio, unsigned level, uint32_t tick) {
     if (globals.previous_tick != 0 && globals.base_time != 0 && globals.not_first == 0) {
         if (percent_error > 300) {
             process_results();
-            printf("End of message\n");
         } else if (percent_error > 25) {
             // Handle incorrect transition if needed
         } else {
@@ -176,10 +236,14 @@ int* process_results() {
         globals.results[j] = globals.results[j] == 0 ? 1 : 0;
     }
 
-    printf("Message received: \n");
+    printf(" \n Message received: \n");
     for (int j = 0; j < globals.results_size; j++) {
         printf("%d,", globals.results[j]);
     }
     globals.message_done = 1;
+	
     return globals.results;
 }
+
+
+
