@@ -1,0 +1,34 @@
+%% Preamble stuff needed so that LaTeX can do the right thing
+\documentclass{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\begin{document}
+%% Section enumerating upcoming tasks and task owners for roughly the next 24 hours
+\section*{Next Goals and Deliverables}
+\begin{itemize}
+\item Message Queuing - both
+\item Test network layer further - both
+\item Upgrade network layer past a hard coded "map" - both
+\item Create sophisticated path-finding algorithm - both
+\item Upgrade addressing strategy to be more realistic and robust for more machines - both
+\item Begin the final paper -both
+\end{itemize}
+%% Section enumerating progress from the previous day. Items people were responsible for in the last progress report must appear. Additional tasks that the group agreed to add since the last progress report may be presented here.
+\section*{Previous Goals and Deliverables}
+\begin{itemize}
+\item ASCII encoding and decoding (DONE) - Oliver
+\item Isolated the link layer into a header file ran by our new network layer (DONE) - Oliver 
+\item Implemented the network layer with a hard coded 'map' (done but needs much more testing) - Evelyn
+\item Eradicated all memory leaks and other instances of poor memory usage where we had been getting lucky (DONE) - both 
+\item Error Detection system prompting the user to retype (DONE) - Oliver
+\end{itemize}
+%% Sections above should be short bullets. Longer free form discussion of information from above goes here. These should still be short! More that a couple sentences and the discussion is better suited as a results write-up, appendix, or design document.
+\section*{Discussion}
+\begin{itemize}
+\item Today we worked on implementing the queue into the program to help with our error detection and making the program more bulletproof 
+\item Struggling to fix our error correction issues due the lack of a queue and spamming messages messes up with the timing.
+\item Feel great about having consistent communication between three pis
+\item thinking forward to our application layer and how it would be cool to implement some form of the battleship game within the command line printing out maps as the back and forth communication would work well with this program.
+\end{itemize}
+%% The appendix pages go here if there are any...
+%\section*{Appendix}
+\end{document}
