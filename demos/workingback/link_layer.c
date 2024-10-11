@@ -85,14 +85,20 @@ my_input promptUser(char home, char dest){
     if (buffer[input_length - 1] == '\n') {
         buffer[input_length - 1] = '\0';
                 input_length--;
-            }
+    }
     // Allocate memory for input_char and input arrays
     //COME BACK HERE AND USE ADD MESSAGE!!!
     char* packedUp = addMessage(buffer, input_length, home, dest);
-    message.length = (input_length + 2) * 8; //adjust the message length based on conversion of chars to bits and home and dest
+    message.length = ((input_length + 2) * 8) + 4; //adjust the message length based on conversion of chars to bits and home and dest
+ //   printf("malloc'd size: %d \n", message.length);
     int *input = (int *)malloc((message.length) * sizeof(int));
+    input[0] = 0;
+    input[1] = 1;
+    input[2] = 0;
+    input[3] = 1;
     for (int i = 0; i < input_length+2; i++) { //adjusting message for the current and sending address
-        char_to_binary(packedUp[i], &input[i * 8]);  // Convert character to binary
+	    //printf("index: %d \n", (i*8) + 4);
+        char_to_binary(packedUp[i], &input[(i * 8) + 4]);  // Convert character to binary
     }
     free(packedUp);
     message.input = input;
@@ -110,7 +116,6 @@ char* binary_to_char(int* results, int length) {
     if (length % 8 != 0) {
         printf("Error: Bit length is not a multiple of 8 \n");
     }
-
     // Allocate memory for the result string
     int char_count = length / 8;
     char* finished_result = (char*)malloc((char_count + 1) * sizeof(char)); 
@@ -136,23 +141,23 @@ char* addMessage(char* message, int length, char home, char dest){
 }
 
 
-//send header 
-void send_header(int input[], int gpio){
-	int set_times[4] = {1,0,1,0};
-    for (int i = 0; i < 4; i++) { // send the header
-        gpio_write(0, gpio, set_times[i]);
-        if (i == 3) {
-            if (input[0] == 0) {
-                usleep(globals.delay);
-            }
-            if (input[0] == 1) {
-                usleep(globals.delay/2);
-            }
-            } else {
-                usleep(globals.delay);
-            }
-    }
-}
+// //send header 
+// void send_header(int input[], int gpio){
+// 	int set_times[4] = {1,0,1,0};
+//     for (int i = 0; i < 4; i++) { // send the header
+//         gpio_write(0, gpio, set_times[i]);
+//         if (i == 3) {
+//             if (input[0] == 0) {
+//                 usleep(globals.delay);
+//             }
+//             if (input[0] == 1) {
+//                 usleep(globals.delay/2);
+//             }
+//             } else {
+//                 usleep(globals.delay);
+//             }
+//     }
+// }
 
 
 
