@@ -16,25 +16,31 @@ struct g_variables {
     int results[1000];
     int results_size;
     int message_done;
+    int message_received;
+    int message_error;
+    int error; 
 };
 
 typedef struct{
     int* input;
     int length;
 } my_input;
+
+
 extern struct g_variables globals;
 
 
 
 // Declare functions that will be used in network layer
-void sendPulses(int bits[], int length);
+void sendPulses(int bits[], int length, int gpio);
 void call_back(int pi, unsigned gpio, unsigned level, uint32_t tick);
-int* charToBit(char bits[], int length);
+char* addMessage(char* message, int length, char home, char dest);
 void process_results();
 void reset_variables();
-void send_header(int bits[]);
-my_input promptUser();
+void send_header(int bits[], int gpio);
+my_input promptUser(char home, char dest);
 void char_to_binary(char c, int* bits);
 char* binary_to_char(int* results, int length);
+void network_start();
 
 #endif
